@@ -16,6 +16,7 @@ import {
   Info
 } from "lucide-react";
 import * as d3 from 'd3';
+
 import pp from "../assets/pp.jpg";
 import heatmap from "../assets/heatmap.png";
 import leetcode from "../assets/leetcode.png";
