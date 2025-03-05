@@ -16,6 +16,10 @@ import {
   Info
 } from "lucide-react";
 import * as d3 from 'd3';
+import pp from "../assets/pp.jpg";
+import heatmap from "../assets/heatmap.png";
+import leetcode from "../assets/leetcode.png";
+import leetcode1 from "../assets/leetcode1.png";
 
 export default function CodingProfile() {
   const [name, setName] = useState("Aditya Singh");
@@ -28,9 +32,14 @@ export default function CodingProfile() {
   const [lastRefresh, setLastRefresh] = useState("05 Mar 2025");
   const [profileViews, setProfileViews] = useState("1");
   const [isStatsOpen, setIsStatsOpen] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const toggleStats = () => {
     setIsStatsOpen(!isStatsOpen);
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   const CircularProgressBar = ({ value, maxValue = 100, color }) => {
@@ -64,7 +73,6 @@ export default function CodingProfile() {
   };
 
   const RatingGraph = () => {
-    // Placeholder for rating graph
     return (
       <div className="w-full h-24 bg-gray-800">
         {/* Placeholder for D3 or Chart.js graph */}
@@ -73,7 +81,6 @@ export default function CodingProfile() {
   };
 
   const ActivityHeatmap = () => {
-    // Placeholder for activity heatmap
     return (
       <div className="w-full h-24 bg-gray-700 grid grid-cols-6 gap-1">
         {[...Array(24)].map((_, i) => (
@@ -87,15 +94,15 @@ export default function CodingProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
+    <div className={`min-h-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'} p-4`}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Profile Card - Left Side */}
-        <div className="bg-[#111] border-0 text-white rounded-lg shadow-md">
+        <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg shadow-md`}>
           <div className="p-0">
             <div className="flex flex-col items-center p-6">
               <div className="w-32 h-32 rounded-full bg-gradient-to-b from-purple-500 to-purple-700 flex items-center justify-center overflow-hidden mb-4">
                 <img
-                  src="/api/placeholder/128/128"
+                  src={pp}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
@@ -104,84 +111,84 @@ export default function CodingProfile() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="text-2xl font-bold text-center bg-transparent border-none outline-none w-full"
+                className={`text-2xl font-bold text-center bg-transparent border-none outline-none w-full ${isDarkMode ? 'text-white' : 'text-black'}`}
               />
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="text-sm text-gray-400 text-center bg-transparent border-none outline-none w-full mb-4"
+                className={`text-sm text-center bg-transparent border-none outline-none w-full mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
               />
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="text-sm text-center bg-transparent border-none outline-none w-full resize-none"
+                className={`text-sm text-center bg-transparent border-none outline-none w-full resize-none ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
                 rows={5}
               />
             </div>
 
             <div className="flex justify-center space-x-4 p-4">
-              <button className="text-gray-400 hover:text-white"><Mail size={20} /></button>
-              <button className="text-gray-400 hover:text-white"><Linkedin size={20} /></button>
-              <button className="text-gray-400 hover:text-white"><Twitter size={20} /></button>
-              <button className="text-gray-400 hover:text-white"><Globe size={20} /></button>
-              <button className="text-gray-400 hover:text-white"><FileText size={20} /></button>
+              <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}><Mail size={20} /></button>
+              <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}><Linkedin size={20} /></button>
+              <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}><Twitter size={20} /></button>
+              <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}><Globe size={20} /></button>
+              <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}><FileText size={20} /></button>
             </div>
 
-            <div className="border-t border-gray-800 my-2"></div>
+            <div className={`border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} my-2`}></div>
 
             <div className="p-4 space-y-2">
-              <div className="flex items-center text-sm text-gray-400">
-                <MapPin size={16} className="mr-2" />
+              <div className="flex items-center text-sm">
+                <MapPin size={16} className={`mr-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="bg-transparent border-none outline-none"
+                  className={`bg-transparent border-none outline-none ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
                 />
               </div>
-              <div className="flex items-center text-sm text-gray-400">
-                <School size={16} className="mr-2" />
+              <div className="flex items-center text-sm">
+                <School size={16} className={`mr-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
                 <input
                   type="text"
                   value={university}
                   onChange={(e) => setUniversity(e.target.value)}
-                  className="bg-transparent border-none outline-none"
+                  className={`bg-transparent border-none outline-none ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
                 />
               </div>
             </div>
 
-            <div className="border-t border-gray-800 my-2"></div>
+            <div className={`border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} my-2`}></div>
 
-            <div className="p-4 flex justify-between text-sm text-gray-400">
+            <div className="p-4 flex justify-between text-sm">
               <div className="flex items-center">
-                <Clock size={16} className="mr-2" />
+                <Clock size={16} className={`mr-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
                 Last Refresh:
               </div>
               <input
                 type="text"
                 value={lastRefresh}
                 onChange={(e) => setLastRefresh(e.target.value)}
-                className="bg-transparent border-none outline-none text-right"
+                className={`bg-transparent border-none outline-none text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
               />
             </div>
-            <div className="px-4 pb-4 flex justify-between text-sm text-gray-400">
+            <div className="px-4 pb-4 flex justify-between text-sm">
               <div className="flex items-center">
-                <Eye size={16} className="mr-2" />
+                <Eye size={16} className={`mr-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
                 Profile Views:
               </div>
               <input
                 type="text"
                 value={profileViews}
                 onChange={(e) => setProfileViews(e.target.value)}
-                className="bg-transparent border-none outline-none text-right"
+                className={`bg-transparent border-none outline-none text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
               />
             </div>
 
-            <div className="border-t border-gray-800 my-2"></div>
+            <div className={`border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} my-2`}></div>
 
             <button
-              className="w-full p-4 flex items-center justify-between text-white bg-[#222] hover:bg-[#333]"
+              className={`w-full p-4 flex items-center justify-between ${isDarkMode ? 'text-white bg-[#222] hover:bg-[#333]' : 'text-black bg-gray-200 hover:bg-gray-300'}`}
               onClick={toggleStats}
             >
               <span className="font-medium">Problem Solving Stats</span>
@@ -202,11 +209,11 @@ export default function CodingProfile() {
                       <div className="w-6 h-6 mr-2 flex items-center justify-center">
                         <span className={`${platform.color} font-bold`}>{platform.letter}</span>
                       </div>
-                      <span className="text-gray-300">{platform.name}</span>
+                      <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{platform.name}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       {platform.status && <Check size={16} className="text-green-500" />}
-                      <ExternalLink size={16} className="text-gray-500" />
+                      <ExternalLink size={16} className={`${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
                     </div>
                   </div>
                 ))}
@@ -216,85 +223,95 @@ export default function CodingProfile() {
         </div>
 
         {/* Middle and Right Content */}
-        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
           {/* Total Questions and Total Active Days */}
-          <div className="bg-[#111] border-0 text-white relative rounded-lg p-4">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4`}>
             <div className="flex justify-between items-center">
               <div>
-                <div className="text-gray-400 text-sm font-normal">Total Questions</div>
-                <div className="text-6xl font-bold">239</div>
+                <div className={`text-sm font-normal ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Questions</div>
+                <div className={`text-6xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>239</div>
               </div>
-              <Info size={16} className="text-gray-600" />
+              <Info size={16} className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
             </div>
           </div>
 
-          <div className="bg-[#111] border-0 text-white relative rounded-lg p-4">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4`}>
             <div className="flex justify-between items-center">
               <div>
-                <div className="text-gray-400 text-sm font-normal">Total Active Days</div>
-                <div className="text-6xl font-bold">94</div>
+                <div className={`text-sm font-normal ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Active Days</div>
+                <div className={`text-6xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>94</div>
               </div>
-              <Info size={16} className="text-gray-600" />
+              <Info size={16} className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
             </div>
           </div>
 
           {/* Activity Heatmap */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2 xl:col-span-1">
-            <div className="flex justify-between items-center mb-2">
-              <div className="text-sm text-gray-400">204 submissions in past 6 months</div>
-              <div className="flex space-x-4">
-                <div className="text-sm">
-                  <span className="text-gray-400">Max.Streak</span> <span className="text-white">31</span>
-                </div>
-                <div className="text-sm">
-                  <span className="text-gray-400">Current.Streak</span> <span className="text-white">4</span>
+          <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-6">
+            {/* Total Contests (Moved to the Upper Column) */}
+            <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4 md:col-span-1 xl:col-span-1`}>
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className={`text-sm font-normal ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Contests</div>
+                  <div className={`text-7xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>3</div>
                 </div>
               </div>
             </div>
-            <ActivityHeatmap />
-          </div>
 
-          {/* Total Contests */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2">
-            <div className="flex justify-between items-center">
-              <div>
-                <div className="text-gray-400 text-sm font-normal">Total Contests</div>
-                <div className="text-7xl font-bold">3</div>
-              </div>
-              <div className="bg-[#222] rounded-md p-2 flex items-center space-x-2">
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <span className="text-yellow-500 font-bold">λ</span>
+            {/* GitHub Stats (Moved to the Bottom Column) */}
+            <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-6 md:col-span-1 xl:col-span-1 xl:w-[225%]`}>
+              <div className="flex justify-between items-center mb-2">
+                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>204 submissions in past 6 months</div>
+                <div className="flex space-x-4">
+                  <div className="text-sm">
+                    <span className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Max.Streak</span> <span className={`${isDarkMode ? 'text-white' : 'text-black'}`}>31</span>
+                  </div>
+                  <div className="text-sm">
+                    <span className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Current.Streak</span> <span className={`${isDarkMode ? 'text-white' : 'text-black'}`}>4</span>
+                  </div>
                 </div>
-                <span className="text-gray-300">LeetCode</span>
-                <span className="text-white font-bold">3</span>
               </div>
+
+              {/* Displaying the imported image instead of ActivityHeatmap */}
+              <a href="https://github.com/Axestein" target="_blank" rel="noopener noreferrer">
+                <img
+                  src={heatmap}
+                  alt="Hashmap"
+                  className="w-full h-auto object-cover rounded-lg"
+                />
+              </a>
             </div>
           </div>
 
           {/* Rating */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4 md:col-span-2`}>
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div>
-                <div className="text-gray-400 text-sm">Rating</div>
-                <div className="text-2xl font-bold">1474</div>
+                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rating</div>
+                <div className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>1474</div>
               </div>
               <div className="col-span-2">
-                <div className="text-gray-400 text-sm">23 Feb 2025</div>
-                <div className="text-md">Weekly Contest 438</div>
-                <div className="text-sm text-gray-400">Rank:17218</div>
+                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>23 Feb 2025</div>
+                <div className={`text-md ${isDarkMode ? 'text-white' : 'text-black'}`}>Weekly Contest 438</div>
+                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rank:17218</div>
               </div>
             </div>
-            <RatingGraph />
+            <a href="https://leetcode.com/u/AdityaKumarSingh7209/" target="_blank" rel="noopener noreferrer">
+              <img
+                src={leetcode}
+                alt="Hashmap"
+                className="w-full h-auto object-cover rounded-lg"
+              />
+            </a>
           </div>
 
           {/* Problems Solved */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2 xl:col-span-1">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4 md:col-span-2 xl:col-span-1`}>
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center">
-                    <span className="text-gray-400 text-sm">Fundamentals</span>
-                    <Info size={14} className="ml-1 text-gray-600" />
+                    <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fundamentals</span>
+                    <Info size={14} className={`ml-1 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -302,11 +319,11 @@ export default function CodingProfile() {
                   <div className="ml-4 flex-1">
                     <div className="flex justify-between items-center">
                       <div className="text-green-500">GFG</div>
-                      <div className="text-white">7</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>7</div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div className="text-yellow-500">HackerRank</div>
-                      <div className="text-white">66</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>66</div>
                     </div>
                   </div>
                 </div>
@@ -314,22 +331,22 @@ export default function CodingProfile() {
 
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-gray-400 text-sm">DSA</div>
+                  <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>DSA</div>
                 </div>
                 <div className="flex items-center">
                   <CircularProgressBar value={123} maxValue={200} color="#FFD700" />
                   <div className="ml-4 flex-1">
                     <div className="flex justify-between items-center">
                       <div className="text-green-500">Easy</div>
-                      <div className="text-white">65</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>65</div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div className="text-yellow-500">Medium</div>
-                      <div className="text-white">50</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>50</div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div className="text-red-500">Hard</div>
-                      <div className="text-white">8</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>8</div>
                     </div>
                   </div>
                 </div>
@@ -337,14 +354,14 @@ export default function CodingProfile() {
 
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-gray-400 text-sm">Competitive Programming</div>
+                  <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Competitive Programming</div>
                 </div>
                 <div className="flex items-center">
                   <CircularProgressBar value={43} color="#22c55e" />
                   <div className="ml-4 flex-1">
                     <div className="flex justify-between items-center">
                       <div className="text-green-500">Codechef</div>
-                      <div className="text-white">43</div>
+                      <div className={`${isDarkMode ? 'text-white' : 'text-black'}`}>43</div>
                     </div>
                   </div>
                 </div>
@@ -353,24 +370,24 @@ export default function CodingProfile() {
           </div>
 
           {/* Contest Rankings */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2 xl:col-span-1">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4 md:col-span-2 xl:col-span-1`}>
             <div className="flex justify-between items-center mb-4">
-              <div className="text-gray-400 text-sm font-normal">Contest Rankings</div>
+              <div className={`text-sm font-normal ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Contest Rankings</div>
             </div>
             <div className="flex items-center justify-center h-64">
               <img 
-                src="/api/placeholder/300/250" 
+                src={leetcode1} 
                 alt="Contest Rankings Placeholder" 
-                className="max-w-full max-h-full object-contain"
+                className="max-w-full max-h-full rounded-xl object-contain"
               />
             </div>
           </div>
 
           {/* DSA Topic Analysis */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4 md:col-span-2 xl:col-span-2">
+          <div className={`${isDarkMode ? 'bg-[#111]' : 'bg-white'} border-0 rounded-lg p-4 md:col-span-2 xl:col-span-2`}>
             <div className="flex justify-between items-center mb-4">
-              <div className="text-gray-400 text-sm font-normal">DSA Topic Analysis</div>
-              <button className="text-sm text-gray-400 hover:text-white">show more</button>
+              <div className={`text-sm font-normal ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>DSA Topic Analysis</div>
+              <button className={`text-sm ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>show more</button>
             </div>
             <div className="space-y-2">
               {[
@@ -386,59 +403,28 @@ export default function CodingProfile() {
                 { topic: 'Simulation', value: 10 }
               ].map((item) => (
                 <div key={item.topic} className="flex items-center">
-                  <div className="w-24 text-gray-400 text-sm">{item.topic}</div>
-                  <div className="flex-1 bg-gray-700 rounded-full h-2 mr-2">
+                  <div className={`w-24 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.topic}</div>
+                  <div className={`flex-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2 mr-2`}>
                     <div 
                       className="bg-blue-500 h-2 rounded-full" 
                       style={{width: `${(item.value / 72) * 100}%`}}
                     ></div>
                   </div>
-                  <div className="text-sm text-gray-400">{item.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Awards */}
-          <div className="bg-[#111] border-0 text-white rounded-lg p-4">
-            <div className="flex justify-between items-center mb-4">
-              <div className="text-gray-400 text-sm font-normal">Awards</div>
-              <div className="text-2xl font-bold">5</div>
-            </div>
-            <div className="flex flex-wrap gap-4 justify-center">
-              {[
-                { type: 'Date', text: '12', subtext: 'DEC', bgClass: 'from-purple-700 to-purple-900' },
-                { type: 'Achievement', text: 'Problem Solving', bgClass: 'bg-yellow-500' },
-                { type: 'Language', text: 'C++', bgClass: 'bg-yellow-500' },
-                { type: 'Language', text: 'Java', bgClass: 'bg-orange-500' }
-              ].map((award, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <div className={`w-16 h-16 rounded-full md:rounded-md flex items-center justify-center 
-                    ${award.type === 'Date' 
-                      ? `bg-gradient-to-b ${award.bgClass}` 
-                      : `${award.bgClass}`} 
-                    text-white`}>
-                    <div className="text-center">
-                      {award.type === 'Date' ? (
-                        <>
-                          <div className="text-xl font-bold">{award.text}</div>
-                          <div className="text-xs">{award.subtext}</div>
-                        </>
-                      ) : (
-                        <div className={`
-                          ${award.type === 'Achievement' ? 'text-xs' : 'text-lg font-bold'}
-                          ${award.type === 'Language' ? 'text-black' : ''}`}>
-                          {award.text}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.value}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Theme Toggle Button */}
+      <button
+        className={`fixed bottom-4 right-4 p-3 rounded-full ${isDarkMode ? 'bg-[#222] text-white' : 'bg-gray-200 text-black'}`}
+        onClick={toggleTheme}
+      >
+        {isDarkMode ? '🌙' : '☀️'}
+      </button>
     </div>
   );
 }
