@@ -384,76 +384,276 @@ export default function DeveloperProfile() {
           
           {/* GitHub Stats - Span 2 columns */}
           <motion.div variants={itemVariants} className="md:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
-              <div className="flex items-center mb-5">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">GitHub Stats</h2>
+  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
+    <div className="flex items-center mb-5">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">GitHub Stats</h2>
+    </div>
+    {isEditing ? (
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Repositories</label>
+          <input 
+            type="number" 
+            name="repos" 
+            value={editableProfile.githubStats.repos} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Stars</label>
+          <input 
+            type="number" 
+            name="stars" 
+            value={editableProfile.githubStats.stars} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Followers</label>
+          <input 
+            type="number" 
+            name="followers" 
+            value={editableProfile.githubStats.followers} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Contributions</label>
+          <input 
+            type="number" 
+            name="contributions" 
+            value={editableProfile.githubStats.contributions} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Pull Requests</label>
+          <input 
+            type="number" 
+            name="pullRequests" 
+            value={editableProfile.githubStats.pullRequests || 0} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Issues</label>
+          <input 
+            type="number" 
+            name="issues" 
+            value={editableProfile.githubStats.issues || 0} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Commit Streak</label>
+          <input 
+            type="number" 
+            name="commitStreak" 
+            value={editableProfile.githubStats.commitStreak || 0} 
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Display Mode</label>
+          <select
+            name="displayMode"
+            value={editableProfile.githubStats.displayMode || 'grid'}
+            onChange={(e) => handleChange(e, 'githubStats')}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+          >
+            <option value="grid">Grid</option>
+            <option value="compact">Compact</option>
+            <option value="detailed">Detailed</option>
+          </select>
+        </div>
+      </div>
+    ) : (
+      <>
+        {(!profile.githubStats.displayMode || profile.githubStats.displayMode === 'grid') && (
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Repositories</span>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{profile.githubStats.repos}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Stars</span>
+              <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{profile.githubStats.stars}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Followers</span>
+              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{profile.githubStats.followers}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Contributions</span>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{profile.githubStats.contributions}</p>
+            </div>
+            {profile.githubStats.pullRequests && (
+              <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm">Pull Requests</span>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{profile.githubStats.pullRequests}</p>
               </div>
-              {isEditing ? (
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Repositories</label>
-                    <input 
-                      type="number" 
-                      name="repos" 
-                      value={editableProfile.githubStats.repos} 
-                      onChange={(e) => handleChange(e, 'githubStats')}
-                      className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Stars</label>
-                    <input 
-                      type="number" 
-                      name="stars" 
-                      value={editableProfile.githubStats.stars} 
-                      onChange={(e) => handleChange(e, 'githubStats')}
-                      className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Followers</label>
-                    <input 
-                      type="number" 
-                      name="followers" 
-                      value={editableProfile.githubStats.followers} 
-                      onChange={(e) => handleChange(e, 'githubStats')}
-                      className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Contributions</label>
-                    <input 
-                      type="number" 
-                      name="contributions" 
-                      value={editableProfile.githubStats.contributions} 
-                      onChange={(e) => handleChange(e, 'githubStats')}
-                      className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                    />
+            )}
+            {profile.githubStats.issues && (
+              <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm">Issues</span>
+                <p className="text-2xl font-bold text-red-600 dark:text-red-400">{profile.githubStats.issues}</p>
+              </div>
+            )}
+            {profile.githubStats.commitStreak && (
+              <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm">Commit Streak</span>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{profile.githubStats.commitStreak}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {profile.githubStats.displayMode === 'compact' && (
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Repos:</span>
+              <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{profile.githubStats.repos}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Stars:</span>
+              <p className="text-lg font-bold text-amber-500 dark:text-amber-400">{profile.githubStats.stars}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Followers:</span>
+              <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{profile.githubStats.followers}</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+              <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Contributions:</span>
+              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{profile.githubStats.contributions}</p>
+            </div>
+            {profile.githubStats.pullRequests && (
+              <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">PRs:</span>
+                <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{profile.githubStats.pullRequests}</p>
+              </div>
+            )}
+            {profile.githubStats.issues && (
+              <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Issues:</span>
+                <p className="text-lg font-bold text-red-600 dark:text-red-400">{profile.githubStats.issues}</p>
+              </div>
+            )}
+            {profile.githubStats.commitStreak && (
+              <div className="bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg flex items-center">
+                <span className="text-gray-500 dark:text-gray-400 text-sm mr-2">Streak:</span>
+                <p className="text-lg font-bold text-green-600 dark:text-green-400">{profile.githubStats.commitStreak}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {profile.githubStats.displayMode === 'detailed' && (
+          <div className="space-y-4">
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600 dark:text-gray-300">Repository Activity</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{profile.githubStats.repos} repos</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                  <div className="bg-indigo-600 dark:bg-indigo-400 h-2.5 rounded-full" style={{ width: `${Math.min(100, (profile.githubStats.repos / 50) * 100)}%` }}></div>
+                </div>
+                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{Math.min(100, Math.round((profile.githubStats.repos / 50) * 100))}%</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <div className="flex flex-col">
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">Stars</span>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-amber-500 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                    <p className="text-xl font-bold text-amber-500">{profile.githubStats.stars}</p>
                   </div>
                 </div>
-              ) : (
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">Repositories</span>
-                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{profile.githubStats.repos}</p>
+              </div>
+
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <div className="flex flex-col">
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">Followers</span>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-purple-600 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                    </svg>
+                    <p className="text-xl font-bold text-purple-600">{profile.githubStats.followers}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">Stars</span>
-                    <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{profile.githubStats.stars}</p>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <div className="flex flex-col">
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">Contributions</span>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-emerald-600 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd"></path>
+                    </svg>
+                    <p className="text-xl font-bold text-emerald-600">{profile.githubStats.contributions}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">Followers</span>
-                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{profile.githubStats.followers}</p>
+                </div>
+              </div>
+
+              {profile.githubStats.commitStreak && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <div className="flex flex-col">
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Commit Streak</span>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-green-600 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                      </svg>
+                      <p className="text-xl font-bold text-green-600">{profile.githubStats.commitStreak} days</p>
+                    </div>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">Contributions</span>
-                    <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{profile.githubStats.contributions}</p>
+                </div>
+              )}
+
+              {profile.githubStats.pullRequests && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <div className="flex flex-col">
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Pull Requests</span>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-blue-600 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
+                      </svg>
+                      <p className="text-xl font-bold text-blue-600">{profile.githubStats.pullRequests}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {profile.githubStats.issues && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <div className="flex flex-col">
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Issues</span>
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-red-600 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+                      </svg>
+                      <p className="text-xl font-bold text-red-600">{profile.githubStats.issues}</p>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
-          </motion.div>
-          
+          </div>
+        )}
+      </>
+    )}
+  </div>
+</motion.div>
           {/* DSA Topics - span 1 column */}
           <motion.div variants={itemVariants} className="md:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
