@@ -1,812 +1,721 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { FileIcon, CodeIcon, BookOpenIcon, GraduationCapIcon, BriefcaseIcon, DownloadIcon, PrinterIcon } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion } from 'framer-motion';
 
-const DeveloperDashboard = () => {
-  // State for developer profile
-  const [devProfile, setDevProfile] = useState({
-    name: 'John Doe',
-    image: '/api/placeholder/150/150',
-    bio: 'Full Stack Developer with 3 years of experience in React and Node.js',
-    socials: {
-      github: 'https://github.com/johndoe',
-      leetcode: 'https://leetcode.com/johndoe',
-      resume: 'https://resume.com/johndoe',
-      website: 'https://johndoe.dev',
-      gmail: 'johndoe@gmail.com',
-      twitter: 'https://twitter.com/johndoe'
-    },
-    education: 'B.Tech in Computer Science, XYZ University',
+// Placeholder data - this would be editable in the actual app
+const leetcodeData = [
+  { month: 'Jan', problems: 15 },
+  { month: 'Feb', problems: 22 },
+  { month: 'Mar', problems: 30 },
+  { month: 'Apr', problems: 42 },
+  { month: 'May', problems: 55 },
+  { month: 'Jun', problems: 63 },
+];
+
+export default function DeveloperProfile() {
+  const [profile, setProfile] = useState({
+    name: 'Alex Johnson',
+    title: 'Full Stack Developer',
+    bio: 'Passionate developer with a focus on creating efficient and scalable web applications. Experienced in modern JavaScript frameworks and cloud technologies.',
+    email: 'alex.j@example.com',
     location: 'San Francisco, CA',
-    dsaQuestions: [
-      { id: 1, title: 'Two Sum', platform: 'LeetCode', difficulty: 'Easy', date: '2023-05-10' },
-      { id: 2, title: 'Valid Parentheses', platform: 'LeetCode', difficulty: 'Easy', date: '2023-05-12' },
-      { id: 3, title: 'Merge Two Sorted Lists', platform: 'LeetCode', difficulty: 'Easy', date: '2023-05-15' }
-    ],
-    fundamentals: [
-      { id: 1, topic: 'Arrays', status: 'Completed' },
-      { id: 2, topic: 'Linked Lists', status: 'Completed' },
-      { id: 3, topic: 'Trees', status: 'In Progress' },
-      { id: 4, topic: 'Graphs', status: 'Not Started' }
-    ],
-    techStack: [
-      { id: 1, name: 'React', proficiency: 'Advanced' },
-      { id: 2, name: 'JavaScript', proficiency: 'Advanced' },
-      { id: 3, name: 'TypeScript', proficiency: 'Intermediate' },
-      { id: 4, name: 'Node.js', proficiency: 'Intermediate' },
-      { id: 5, name: 'MongoDB', proficiency: 'Intermediate' },
-      { id: 6, name: 'Tailwind CSS', proficiency: 'Advanced' }
+    website: 'alexj.dev',
+    education: 'M.S. Computer Science, Stanford University',
+    leetcodeStats: {
+      solved: 310,
+      easy: 95,
+      medium: 165,
+      hard: 50,
+    },
+    dsaTopics: ['Arrays', 'Linked Lists', 'Trees', 'Graphs', 'Dynamic Programming', 'Recursion', 'Sorting'],
+    skills: [
+      { name: 'JavaScript', level: 95 },
+      { name: 'React', level: 92 },
+      { name: 'Node.js', level: 88 },
+      { name: 'TypeScript', level: 85 },
+      { name: 'MongoDB', level: 80 },
+      { name: 'PostgreSQL', level: 75 },
+      { name: 'AWS', level: 78 },
+      { name: 'Docker', level: 70 },
     ],
     projects: [
-      { id: 1, title: 'E-commerce Platform', description: 'Built a full-stack e-commerce site using MERN stack', github: 'https://github.com/johndoe/ecommerce', live: 'https://ecommerce-project.com', image: '/api/placeholder/300/200' },
-      { id: 2, title: 'Task Manager', description: 'A React and Firebase based task management application', github: 'https://github.com/johndoe/taskmanager', live: 'https://task-manager-app.com', image: '/api/placeholder/300/200' }
+      {
+        title: 'DevCollab',
+        description: 'A collaborative platform for developers to share and work on projects together in real-time.',
+        tech: ['React', 'Node.js', 'Socket.io', 'MongoDB'],
+        live: 'https://devcollab.io'
+      },
+      {
+        title: 'CodeAnalyzer',
+        description: 'Tool that analyzes code quality and provides suggestions for improvements based on best practices.',
+        tech: ['TypeScript', 'Express', 'NLP', 'PostgreSQL'],
+        live: 'https://codeanalyzer.tech'
+      },
+      {
+        title: 'HealthTracker',
+        description: 'Mobile application for tracking health metrics with visualization and AI-powered insights.',
+        tech: ['React Native', 'Redux', 'Firebase', 'TensorFlow.js'],
+        live: 'https://healthtracker.app'
+      }
     ],
-    blogs: [
-      { id: 1, title: 'Understanding React Hooks', link: 'https://blog.com/react-hooks', date: '2023-06-15' },
-      { id: 2, title: 'Mastering Tailwind CSS', link: 'https://blog.com/tailwind', date: '2023-07-20' }
-    ],
-    achievements: [
-      { id: 1, title: 'AWS Certified Developer', date: '2023-01', description: 'Earned AWS Developer Associate certification' },
-      { id: 2, title: 'Hacktoberfest 2022', date: '2022-10', description: 'Contributed to 5 open source projects' }
-    ],
-    roadmap: [
-      { id: 1, topic: 'GraphQL', status: 'In Progress', target: 'July 2023' },
-      { id: 2, topic: 'Docker & Kubernetes', status: 'Planned', target: 'September 2023' }
-    ]
-  });
-
-  // State for GitHub and LeetCode stats
-  const [githubStats, setGithubStats] = useState({
-    repos: 25,
-    stars: 47,
-    forks: 12,
-    contributions: 843
-  });
-
-  const [leetcodeStats, setLeetcodeStats] = useState({
-    solved: 125,
-    easy: 45,
-    medium: 65,
-    hard: 15,
-    ranking: 65432
-  });
-
-  const [geeksforgeeksStats, setGeeksforgeeksStats] = useState({
-    solved: 78,
-    score: 356,
-    monthlyChallenges: 3
-  });
-
-  // State for edit mode
-  const [editMode, setEditMode] = useState(false);
-  const [editSection, setEditSection] = useState(null);
-  const [tempData, setTempData] = useState({});
-  const [activeTab, setActiveTab] = useState('profile');
-
-  // Handle edit for specific section
-  const handleEdit = (section, data = null) => {
-    setEditSection(section);
-    setTempData(data || devProfile[section]);
-    setEditMode(true);
-  };
-
-  // Handle saving edited data
-  const handleSave = () => {
-    if (editSection) {
-      setDevProfile({
-        ...devProfile,
-        [editSection]: tempData
-      });
+    githubStats: {
+      repos: 48,
+      stars: 285,
+      followers: 156,
+      contributions: 1267
     }
-    setEditMode(false);
-    setEditSection(null);
-  };
-
-  // Handle input change for edited fields
-  const handleInputChange = (field, value) => {
-    setTempData({
-      ...tempData,
-      [field]: value
-    });
-  };
-
-  // Handle social link changes
-  const handleSocialChange = (platform, value) => {
-    setTempData({
-      ...tempData,
-      [platform]: value
-    });
-  };
-
-  // Mock function to fetch GitHub stats
-  const fetchGitHubStats = (username) => {
-    // In a real app, this would make an API call to GitHub
-    console.log(`Fetching GitHub stats for ${username}`);
-    // Mock data update
-    setGithubStats({
-      repos: Math.floor(Math.random() * 50) + 10,
-      stars: Math.floor(Math.random() * 100) + 20,
-      forks: Math.floor(Math.random() * 30) + 5,
-      contributions: Math.floor(Math.random() * 1000) + 100
-    });
-  };
-
-  // Mock function to fetch LeetCode stats
-  const fetchLeetCodeStats = (username) => {
-    // In a real app, this would make an API call to LeetCode
-    console.log(`Fetching LeetCode stats for ${username}`);
-    // Mock data update
-    setLeetcodeStats({
-      solved: Math.floor(Math.random() * 200) + 50,
-      easy: Math.floor(Math.random() * 70) + 30,
-      medium: Math.floor(Math.random() * 100) + 20,
-      hard: Math.floor(Math.random() * 30) + 5,
-      ranking: Math.floor(Math.random() * 100000) + 10000
-    });
-  };
-
-  // Mock function to fetch GeeksforGeeks stats
-  const fetchGeeksforGeeksStats = (username) => {
-    // In a real app, this would make an API call to GeeksforGeeks
-    console.log(`Fetching GeeksforGeeks stats for ${username}`);
-    // Mock data update
-    setGeeksforgeeksStats({
-      solved: Math.floor(Math.random() * 100) + 50,
-      score: Math.floor(Math.random() * 500) + 200,
-      monthlyChallenges: Math.floor(Math.random() * 5) + 1
-    });
-  };
-
-  // Handle adding new DSA question
-  const handleAddDSAQuestion = () => {
-    const newQuestion = {
-      id: devProfile.dsaQuestions.length + 1,
-      title: 'New Question',
-      platform: 'LeetCode',
-      difficulty: 'Medium',
-      date: new Date().toISOString().split('T')[0]
-    };
+  });
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableProfile, setEditableProfile] = useState({...profile});
+  
+  // Handle form changes
+  const handleChange = (e, section, index) => {
+    const { name, value } = e.target;
     
-    setDevProfile({
-      ...devProfile,
-      dsaQuestions: [...devProfile.dsaQuestions, newQuestion]
-    });
+    if (section) {
+      if (index !== undefined) {
+        // For array fields like skills
+        setEditableProfile(prev => {
+          const newArray = [...prev[section]];
+          newArray[index] = { ...newArray[index], [name]: value };
+          return { ...prev, [section]: newArray };
+        });
+      } else {
+        // For nested objects
+        setEditableProfile(prev => ({
+          ...prev,
+          [section]: { ...prev[section], [name]: value }
+        }));
+      }
+    } else {
+      // For top-level fields
+      setEditableProfile(prev => ({ ...prev, [name]: value }));
+    }
+  };
+  
+  const saveChanges = () => {
+    setProfile({...editableProfile});
+    setIsEditing(false);
+  };
+  
+  const cancelEdit = () => {
+    setEditableProfile({...profile});
+    setIsEditing(false);
+  };
+  
+  const printProfile = () => {
+    window.print();
+  };
+  
+  const downloadAsPDF = () => {
+    alert('This would download as PDF in a real implementation');
+    // In a real implementation, we would use a library like jsPDF or react-pdf
+  };
+  
+  const downloadAsDoc = () => {
+    alert('This would download as DOC in a real implementation');
+    // In a real implementation, we would use a library to export as DOCX
+  };
+  
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: 'spring', stiffness: 100 }
+    }
   };
 
-  // Handle adding new project
-  const handleAddProject = () => {
-    const newProject = {
-      id: devProfile.projects.length + 1,
-      title: 'New Project',
-      description: 'Project description',
-      github: 'https://github.com/',
-      live: 'https://project.com',
-      image: '/api/placeholder/300/200'
-    };
-    
-    setDevProfile({
-      ...devProfile,
-      projects: [...devProfile.projects, newProject]
-    });
-  };
-
-  // Handle adding new blog
-  const handleAddBlog = () => {
-    const newBlog = {
-      id: devProfile.blogs.length + 1,
-      title: 'New Blog Post',
-      link: 'https://blog.com/new-post',
-      date: new Date().toISOString().split('T')[0]
-    };
-    
-    setDevProfile({
-      ...devProfile,
-      blogs: [...devProfile.blogs, newBlog]
-    });
-  };
-
-  // Handle adding new achievement
-  const handleAddAchievement = () => {
-    const newAchievement = {
-      id: devProfile.achievements.length + 1,
-      title: 'New Achievement',
-      date: new Date().toISOString().split('T')[0].substring(0, 7),
-      description: 'Achievement description'
-    };
-    
-    setDevProfile({
-      ...devProfile,
-      achievements: [...devProfile.achievements, newAchievement]
-    });
-  };
-
-  // Handle adding new roadmap item
-  const handleAddRoadmapItem = () => {
-    const newItem = {
-      id: devProfile.roadmap.length + 1,
-      topic: 'New Goal',
-      status: 'Planned',
-      target: 'December 2023'
-    };
-    
-    setDevProfile({
-      ...devProfile,
-      roadmap: [...devProfile.roadmap, newItem]
-    });
-  };
-
-  // Component for the Profile section
-  const ProfileSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      {editMode && editSection === 'profile' ? (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              value={tempData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-            />
+  return (
+    <div className="bg-gray-900 min-h-screen text-gray-100 p-6 print:bg-white print:text-black">
+      {/* Header Action Buttons */}
+      <div className="flex justify-end mb-4 space-x-3 print:hidden">
+        {isEditing ? (
+          <>
+            <button 
+              onClick={saveChanges}
+              className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Save Changes
+            </button>
+            <button 
+              onClick={cancelEdit}
+              className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+            <button 
+              onClick={printProfile} 
+              className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+            >
+              <PrinterIcon size={16} /> Print
+            </button>
+            <button 
+              onClick={downloadAsPDF}
+              className="px-4 py-2 bg-amber-600 rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2"
+            >
+              <DownloadIcon size={16} /> PDF
+            </button>
+            <button 
+              onClick={downloadAsDoc}
+              className="px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors flex items-center gap-2"
+            >
+              <FileIcon size={16} /> DOC
+            </button>
+          </>
+        )}
+      </div>
+      
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Left Column - Personal Info */}
+        <motion.div variants={itemVariants} className="lg:col-span-1">
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg mb-6 border border-gray-700">
+            {isEditing ? (
+              <>
+                <div className="mb-4">
+                  <label className="block text-gray-400 mb-2">Profile Image</label>
+                  <div className="w-32 h-32 rounded-full bg-gray-700 mb-4 mx-auto flex items-center justify-center">
+                    <span className="text-gray-500">Upload Image</span>
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-400 mb-2">Name</label>
+                  <input 
+                    type="text" 
+                    name="name" 
+                    value={editableProfile.name} 
+                    onChange={(e) => handleChange(e)}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-400 mb-2">Title</label>
+                  <input 
+                    type="text" 
+                    name="title" 
+                    value={editableProfile.title} 
+                    onChange={(e) => handleChange(e)}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-400 mb-2">Bio</label>
+                  <textarea 
+                    name="bio" 
+                    value={editableProfile.bio} 
+                    onChange={(e) => handleChange(e)}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 h-32"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-center mb-6">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mx-auto mb-4 flex items-center justify-center">
+                    <img src="/api/placeholder/128/128" alt={profile.name} className="rounded-full" />
+                  </div>
+                  <h1 className="text-2xl font-bold">{profile.name}</h1>
+                  <p className="text-blue-400">{profile.title}</p>
+                </div>
+                <p className="text-gray-300 mb-6">{profile.bio}</p>
+              </>
+            )}
+            
+            <div className="space-y-3">
+              {isEditing ? (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-2">GitHub Username</label>
+                    <input 
+                      type="text" 
+                      name="github" 
+                      value={editableProfile.github} 
+                      onChange={(e) => handleChange(e)}
+                      className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-2">Email</label>
+                    <input 
+                      type="email" 
+                      name="email" 
+                      value={editableProfile.email} 
+                      onChange={(e) => handleChange(e)}
+                      className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-2">Location</label>
+                    <input 
+                      type="text" 
+                      name="location" 
+                      value={editableProfile.location} 
+                      onChange={(e) => handleChange(e)}
+                      className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-2">Website</label>
+                    <input 
+                      type="text" 
+                      name="website" 
+                      value={editableProfile.website} 
+                      onChange={(e) => handleChange(e)}
+                      className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-2">Education</label>
+                    <input 
+                      type="text" 
+                      name="education" 
+                      value={editableProfile.education} 
+                      onChange={(e) => handleChange(e)}
+                      className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center">
+                    <GitHubLogoIcon className="text-gray-400 mr-2" size={16} />
+                    <span>{profile.github}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CodeIcon className="text-gray-400 mr-2" size={16} />
+                    <span>{profile.email}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <BriefcaseIcon className="text-gray-400 mr-2" size={16} />
+                    <span>{profile.location}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FileIcon className="text-gray-400 mr-2" size={16} />
+                    <span>{profile.website}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <GraduationCapIcon className="text-gray-400 mr-2" size={16} />
+                    <span>{profile.education}</span>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Bio</label>
-            <textarea
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              value={tempData.bio}
-              onChange={(e) => handleInputChange('bio', e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Education</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              value={tempData.education}
-              onChange={(e) => handleInputChange('education', e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Location</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              value={tempData.location}
-              onChange={(e) => handleInputChange('location', e.target.value)}
-            />
-          </div>
-          <button 
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-start space-x-6">
-          <img
-            src={devProfile.image}
-            alt={devProfile.name}
-            className="w-24 h-24 rounded-full object-cover"
-          />
-          <div className="flex-1">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">{devProfile.name}</h2>
-                <p className="text-gray-600 mt-1">{devProfile.bio}</p>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Education:</span> {devProfile.education}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Location:</span> {devProfile.location}
-                  </p>
+          
+          {/* GitHub Stats */}
+          <motion.div variants={itemVariants} className="bg-gray-800 rounded-xl p-6 shadow-lg mb-6 border border-gray-700">
+            <div className="flex items-center mb-4">
+              <GitHubLogoIcon size={20} className="mr-2 text-gray-300" />
+              <h2 className="text-xl font-bold">GitHub Stats</h2>
+            </div>
+            {isEditing ? (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-gray-400 mb-1">Repositories</label>
+                  <input 
+                    type="number" 
+                    name="repos" 
+                    value={editableProfile.githubStats.repos} 
+                    onChange={(e) => handleChange(e, 'githubStats')}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Stars</label>
+                  <input 
+                    type="number" 
+                    name="stars" 
+                    value={editableProfile.githubStats.stars} 
+                    onChange={(e) => handleChange(e, 'githubStats')}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Followers</label>
+                  <input 
+                    type="number" 
+                    name="followers" 
+                    value={editableProfile.githubStats.followers} 
+                    onChange={(e) => handleChange(e, 'githubStats')}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Contributions</label>
+                  <input 
+                    type="number" 
+                    name="contributions" 
+                    value={editableProfile.githubStats.contributions} 
+                    onChange={(e) => handleChange(e, 'githubStats')}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                  />
                 </div>
               </div>
-              <button
-                className="text-blue-600 hover:text-blue-800"
-                onClick={() => handleEdit('profile', {
-                  name: devProfile.name,
-                  bio: devProfile.bio,
-                  education: devProfile.education,
-                  location: devProfile.location
-                })}
-              >
-                Edit
-              </button>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-700 p-3 rounded-lg">
+                  <span className="text-gray-400 text-sm">Repositories</span>
+                  <p className="text-2xl font-bold text-blue-400">{profile.githubStats.repos}</p>
+                </div>
+                <div className="bg-gray-700 p-3 rounded-lg">
+                  <span className="text-gray-400 text-sm">Stars</span>
+                  <p className="text-2xl font-bold text-yellow-400">{profile.githubStats.stars}</p>
+                </div>
+                <div className="bg-gray-700 p-3 rounded-lg">
+                  <span className="text-gray-400 text-sm">Followers</span>
+                  <p className="text-2xl font-bold text-purple-400">{profile.githubStats.followers}</p>
+                </div>
+                <div className="bg-gray-700 p-3 rounded-lg">
+                  <span className="text-gray-400 text-sm">Contributions</span>
+                  <p className="text-2xl font-bold text-green-400">{profile.githubStats.contributions}</p>
+                </div>
+              </div>
+            )}
+          </motion.div>
+          
+          {/* DSA Topics */}
+          <motion.div variants={itemVariants} className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+            <div className="flex items-center mb-4">
+              <BookOpenIcon size={20} className="mr-2 text-gray-300" />
+              <h2 className="text-xl font-bold">DSA Topics Mastered</h2>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Social Links */}
-      <div className="mt-6">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="text-lg font-medium text-gray-800">Social Links</h3>
-          <button
-            className="text-blue-600 hover:text-blue-800"
-            onClick={() => handleEdit('socials', devProfile.socials)}
-          >
-            Edit
-          </button>
-        </div>
-        
-        {editMode && editSection === 'socials' ? (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">GitHub</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.github}
-                onChange={(e) => handleSocialChange('github', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">LeetCode</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.leetcode}
-                onChange={(e) => handleSocialChange('leetcode', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Resume</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.resume}
-                onChange={(e) => handleSocialChange('resume', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Website</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.website}
-                onChange={(e) => handleSocialChange('website', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Gmail</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.gmail}
-                onChange={(e) => handleSocialChange('gmail', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Twitter</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                value={tempData.twitter}
-                onChange={(e) => handleSocialChange('twitter', e.target.value)}
-              />
-            </div>
-            <div className="col-span-2">
-              <button 
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-3">
-            <a href={devProfile.socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>GitHub</span>
-            </a>
-            <a href={devProfile.socials.leetcode} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>LeetCode</span>
-            </a>
-            <a href={devProfile.socials.resume} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>Resume</span>
-            </a>
-            <a href={devProfile.socials.website} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>Website</span>
-            </a>
-            <a href={`mailto:${devProfile.socials.gmail}`} className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>Gmail</span>
-            </a>
-            <a href={devProfile.socials.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm">
-              <span>Twitter</span>
-            </a>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  // Component for GitHub and Coding Platform Stats
-  const StatsSection = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-      {/* GitHub Stats */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-800">GitHub Stats</h3>
-          <button 
-            className="text-blue-600 hover:text-blue-800 text-sm"
-            onClick={() => {
-              const username = prompt("Enter your GitHub username:");
-              if (username) fetchGitHubStats(username);
-            }}
-          >
-            Update
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-3 rounded-md">
-            <p className="text-sm text-gray-600">Repositories</p>
-            <p className="text-xl font-bold">{githubStats.repos}</p>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-md">
-            <p className="text-sm text-gray-600">Stars</p>
-            <p className="text-xl font-bold">{githubStats.stars}</p>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-md">
-            <p className="text-sm text-gray-600">Forks</p>
-            <p className="text-xl font-bold">{githubStats.forks}</p>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-md">
-            <p className="text-sm text-gray-600">Contributions</p>
-            <p className="text-xl font-bold">{githubStats.contributions}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* LeetCode Stats */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-800">LeetCode Stats</h3>
-          <button 
-            className="text-blue-600 hover:text-blue-800 text-sm"
-            onClick={() => {
-              const username = prompt("Enter your LeetCode username:");
-              if (username) fetchLeetCodeStats(username);
-            }}
-          >
-            Update
-          </button>
-        </div>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Problems Solved</span>
-            <span className="font-bold">{leetcodeStats.solved}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-green-600">Easy</span>
-            <span>{leetcodeStats.easy}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-yellow-600">Medium</span>
-            <span>{leetcodeStats.medium}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-red-600">Hard</span>
-            <span>{leetcodeStats.hard}</span>
-          </div>
-          <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-            <span className="text-gray-600">Ranking</span>
-            <span className="font-bold">#{leetcodeStats.ranking}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* GeeksforGeeks Stats */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-800">GeeksforGeeks Stats</h3>
-          <button 
-            className="text-blue-600 hover:text-blue-800 text-sm"
-            onClick={() => {
-              const username = prompt("Enter your GeeksforGeeks username:");
-              if (username) fetchGeeksforGeeksStats(username);
-            }}
-          >
-            Update
-          </button>
-        </div>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Problems Solved</span>
-            <span className="font-bold">{geeksforgeeksStats.solved}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Score</span>
-            <span className="font-bold">{geeksforgeeksStats.score}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Monthly Challenges</span>
-            <span className="font-bold">{geeksforgeeksStats.monthlyChallenges}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Component for DSA Questions section
-  const DSAQuestionsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">DSA Questions Solved</h3>
-        <button 
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
-          onClick={handleAddDSAQuestion}
-        >
-          Add Question
-        </button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Platform</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {devProfile.dsaQuestions.map((question) => (
-              <tr key={question.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{question.title}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{question.platform}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${question.difficulty === 'Easy' ? 'bg-green-100 text-green-800' : 
-                    question.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 
-                    'bg-red-100 text-red-800'}`}>
-                    {question.difficulty}
+            {isEditing ? (
+              <div className="space-y-2">
+                <p className="text-sm text-gray-400 mb-2">Enter topics separated by commas</p>
+                <textarea 
+                  value={editableProfile.dsaTopics.join(', ')} 
+                  onChange={(e) => {
+                    const topics = e.target.value.split(',').map(topic => topic.trim());
+                    setEditableProfile(prev => ({...prev, dsaTopics: topics}));
+                  }}
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 h-24"
+                />
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {profile.dsaTopics.map((topic, idx) => (
+                  <span 
+                    key={idx} 
+                    className="bg-gray-700 text-blue-300 px-3 py-1 rounded-full text-sm"
+                  >
+                    {topic}
                   </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{question.date}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button className="text-blue-600 hover:text-blue-800 mr-3">Edit</button>
-                  <button className="text-red-600 hover:text-red-800">Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  // Component for Fundamentals section
-  const FundamentalsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Fundamental Topics</h3>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm">
-          Add Topic
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {devProfile.fundamentals.map((topic) => (
-          <div key={topic.id} className="flex justify-between items-center p-3 border border-gray-200 rounded-md">
-            <span className="font-medium">{topic.topic}</span>
-            <span className={`px-2 py-1 text-xs font-semibold rounded 
-              ${topic.status === 'Completed' ? 'bg-green-100 text-green-800' : 
-              topic.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' : 
-              'bg-gray-100 text-gray-800'}`}>
-              {topic.status}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Component for Tech Stack section
-  const TechStackSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Tech Stack / Skills</h3>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm">
-          Add Skill
-        </button>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {devProfile.techStack.map((tech) => (
-          <div key={tech.id} className="bg-gray-50 p-4 rounded-md">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-medium text-gray-800">{tech.name}</span>
-              <span className={`text-xs font-semibold px-2 py-1 rounded
-                ${tech.proficiency === 'Advanced' ? 'bg-green-100 text-green-800' : 
-                tech.proficiency === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' : 
-                'bg-blue-100 text-blue-800'}`}>
-                {tech.proficiency}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Component for Projects section
-  const ProjectsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Projects</h3>
-        <button 
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
-          onClick={handleAddProject}
-        >
-          Add Project
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {devProfile.projects.map((project) => (
-          <div key={project.id} className="border border-gray-200 rounded-lg overflow-hidden">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h4 className="text-lg font-medium text-gray-800">{project.title}</h4>
-              <p className="text-gray-600 mt-1">{project.description}</p>
-              <div className="flex mt-3 space-x-3">
-              <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm">
-                  GitHub
-                </a>
-                <a href={project.live} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm">
-                  Live Demo
-                </a>
+                ))}
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Component for Blogs/Articles section
-  const BlogsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Blogs / Articles</h3>
-        <button 
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
-          onClick={handleAddBlog}
-        >
-          Add Blog
-        </button>
-      </div>
-      <div className="space-y-4">
-        {devProfile.blogs.map((blog) => (
-          <div key={blog.id} className="border-b border-gray-200 pb-4 last:border-b-0">
-            <a href={blog.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">
-              {blog.title}
-            </a>
-            <p className="text-sm text-gray-500 mt-1">Published: {blog.date}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Component for Achievements/Certifications section
-  const AchievementsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Achievements & Certifications</h3>
-        <button 
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
-          onClick={handleAddAchievement}
-        >
-          Add Achievement
-        </button>
-      </div>
-      <div className="space-y-4">
-        {devProfile.achievements.map((achievement) => (
-          <div key={achievement.id} className="border border-gray-200 rounded-md p-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-medium text-gray-800">{achievement.title}</h4>
-                <p className="text-sm text-gray-500 mt-1">{achievement.date}</p>
-                <p className="text-gray-600 mt-2">{achievement.description}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Component for Roadmaps section
-  const RoadmapsSection = () => (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-800">Learning Roadmap</h3>
-        <button 
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
-          onClick={handleAddRoadmapItem}
-        >
-          Add Goal
-        </button>
-      </div>
-      <div className="space-y-4">
-        {devProfile.roadmap.map((item) => (
-          <div key={item.id} className="border-l-4 border-blue-500 pl-4 py-2">
-            <div className="flex justify-between items-center">
-              <h4 className="font-medium text-gray-800">{item.topic}</h4>
-              <span className={`text-xs font-semibold px-2 py-1 rounded
-                ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 
-                item.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' : 
-                'bg-gray-100 text-gray-800'}`}>
-                {item.status}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600 mt-1">Target: {item.target}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Main render
-  return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Developer Dashboard</h1>
+            )}
+          </motion.div>
+        </motion.div>
         
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-gray-200 mb-6">
-          <button
-            className={`py-2 px-4 font-medium ${activeTab === 'profile' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-            onClick={() => setActiveTab('profile')}
-          >
-            Profile Overview
-          </button>
-          <button
-            className={`py-2 px-4 font-medium ${activeTab === 'skills' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-            onClick={() => setActiveTab('skills')}
-          >
-            Tech Stack
-          </button>
-          <button
-            className={`py-2 px-4 font-medium ${activeTab === 'coding' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-            onClick={() => setActiveTab('coding')}
-          >
-            Coding Progress
-          </button>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 'profile' && (
-          <>
-            <ProfileSection />
-            <TechStackSection />
-            <ProjectsSection />
-            <BlogsSection />
-            <AchievementsSection />
-            <RoadmapsSection />
-          </>
-        )}
-
-        {activeTab === 'skills' && (
-          <>
-            <TechStackSection />
-            <ProjectsSection />
-          </>
-        )}
-
-        {activeTab === 'coding' && (
-          <>
-            <StatsSection />
-            <DSAQuestionsSection />
-            <FundamentalsSection />
-          </>
-        )}
-      </div>
+        {/* Middle and Right Column */}
+        <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
+          {/* Skills */}
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+            <h2 className="text-xl font-bold mb-4">Skills</h2>
+            {isEditing ? (
+              <div className="space-y-3">
+                {editableProfile.skills.map((skill, idx) => (
+                  <div key={idx} className="grid grid-cols-6 gap-2 items-center">
+                    <div className="col-span-2">
+                      <input 
+                        type="text" 
+                        name="name" 
+                        value={skill.name} 
+                        onChange={(e) => handleChange(e, 'skills', idx)}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <input 
+                        type="range" 
+                        name="level" 
+                        min="0" 
+                        max="100" 
+                        value={skill.level} 
+                        onChange={(e) => handleChange(e, 'skills', idx)}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="col-span-1 text-right">
+                      {skill.level}%
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  onClick={() => {
+                    setEditableProfile(prev => ({
+                      ...prev, 
+                      skills: [...prev.skills, { name: 'New Skill', level: 50 }]
+                    }));
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded mt-2"
+                >
+                  Add Skill
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {profile.skills.map((skill, idx) => (
+                  <div key={idx}>
+                    <div className="flex justify-between mb-1">
+                      <span>{skill.name}</span>
+                      <span className="text-gray-400">{skill.level}%</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <motion.div 
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${skill.level}%` }}
+                        transition={{ duration: 1, delay: idx * 0.1 }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* LeetCode Stats */}
+          <motion.div variants={itemVariants} className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+            <h2 className="text-xl font-bold mb-4">LeetCode Progress</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                {isEditing ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-gray-400 mb-1">Total Solved</label>
+                      <input 
+                        type="number" 
+                        name="solved" 
+                        value={editableProfile.leetcodeStats.solved} 
+                        onChange={(e) => handleChange(e, 'leetcodeStats')}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-1">Easy</label>
+                      <input 
+                        type="number" 
+                        name="easy" 
+                        value={editableProfile.leetcodeStats.easy} 
+                        onChange={(e) => handleChange(e, 'leetcodeStats')}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-1">Medium</label>
+                      <input 
+                        type="number" 
+                        name="medium" 
+                        value={editableProfile.leetcodeStats.medium} 
+                        onChange={(e) => handleChange(e, 'leetcodeStats')}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-1">Hard</label>
+                      <input 
+                        type="number" 
+                        name="hard" 
+                        value={editableProfile.leetcodeStats.hard} 
+                        onChange={(e) => handleChange(e, 'leetcodeStats')}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-700 p-4 rounded-lg text-center">
+                      <span className="text-gray-400">Total Solved</span>
+                      <p className="text-3xl font-bold text-green-400">{profile.leetcodeStats.solved}</p>
+                    </div>
+                    <div className="bg-gray-700 p-4 rounded-lg text-center">
+                      <span className="text-gray-400">Easy</span>
+                      <p className="text-xl font-semibold text-green-300">{profile.leetcodeStats.easy}</p>
+                    </div>
+                    <div className="bg-gray-700 p-4 rounded-lg text-center">
+                      <span className="text-gray-400">Medium</span>
+                      <p className="text-xl font-semibold text-yellow-300">{profile.leetcodeStats.medium}</p>
+                    </div>
+                    <div className="bg-gray-700 p-4 rounded-lg text-center">
+                      <span className="text-gray-400">Hard</span>
+                      <p className="text-xl font-semibold text-red-400">{profile.leetcodeStats.hard}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={leetcodeData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
+                    <XAxis dataKey="month" stroke="#9CA3AF" />
+                    <YAxis stroke="#9CA3AF" />
+                    <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none' }} />
+                    <Line type="monotone" dataKey="problems" stroke="#8B5CF6" strokeWidth={2} activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Projects */}
+          <motion.div variants={containerVariants} className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+            <h2 className="text-xl font-bold mb-4">Projects</h2>
+            {isEditing ? (
+              <div className="space-y-6">
+                {editableProfile.projects.map((project, idx) => (
+                  <div key={idx} className="border border-gray-700 p-4 rounded-lg">
+                    <div className="mb-3">
+                      <label className="block text-gray-400 mb-1">Project Title</label>
+                      <input 
+                        type="text" 
+                        name="title" 
+                        value={project.title} 
+                        onChange={(e) => handleChange(e, 'projects', idx)}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="block text-gray-400 mb-1">Description</label>
+                      <textarea 
+                        name="description" 
+                        value={project.description} 
+                        onChange={(e) => handleChange(e, 'projects', idx)}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 h-20"
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="block text-gray-400 mb-1">Technologies (comma separated)</label>
+                      <input 
+                        type="text" 
+                        value={project.tech.join(', ')} 
+                        onChange={(e) => {
+                          const tech = e.target.value.split(',').map(t => t.trim());
+                          setEditableProfile(prev => {
+                            const newProjects = [...prev.projects];
+                            newProjects[idx] = {...newProjects[idx], tech};
+                            return {...prev, projects: newProjects};
+                          });
+                        }}
+                        className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-gray-400 mb-1">GitHub URL</label>
+                        <input 
+                          type="text" 
+                          name="github" 
+                          value={project.github} 
+                          onChange={(e) => handleChange(e, 'projects', idx)}
+                          className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-400 mb-1">Live URL</label>
+                        <input 
+                          type="text" 
+                          name="live" 
+                          value={project.live} 
+                          onChange={(e) => handleChange(e, 'projects', idx)}
+                          className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  onClick={() => {
+                    setEditableProfile(prev => ({
+                      ...prev, 
+                      projects: [...prev.projects, {
+                        title: 'New Project',
+                        description: 'Project description',
+                        tech: ['Tech Stack'],
+                        github: 'https://github.com/',
+                        live: 'https://example.com/'
+                      }]
+                    }));
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded mt-2"
+                >
+                  Add Project
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {profile.projects.map((project, idx) => (
+                  <motion.div 
+                  key={idx} 
+                  variants={itemVariants}
+                  className="bg-gray-700 p-5 rounded-lg border border-gray-600 hover:border-purple-500 transition-all"
+                >
+                  <h3 className="text-lg font-bold text-blue-300">{project.title}</h3>
+                  <p className="text-gray-300 my-2">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 my-3">
+                    {project.tech.map((tech, techIdx) => (
+                      <span key={techIdx} className="bg-gray-800 text-blue-300 px-2 py-1 rounded-full text-xs">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-3 mt-4">
+                    <a 
+                      href={project.github} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center text-gray-300 hover:text-blue-400 transition-colors text-sm"
+                    >
+                      <GitHubLogoIcon size={16} className="mr-1" /> GitHub
+                    </a>
+                    <a 
+                      href={project.live} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center text-gray-300 hover:text-green-400 transition-colors text-sm"
+                    >
+                      <FileIcon size={16} className="mr-1" /> Live Demo
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </motion.div>
+    
+    {/* Footer */}
+    <div className="mt-8 text-center text-gray-500 text-sm print:hidden">
+      <p>© {new Date().getFullYear()} Developer Profile - Created with React and Tailwind CSS</p>
     </div>
-  );
-};
-
-export default DeveloperDashboard;
+  </div>
+);
+}
