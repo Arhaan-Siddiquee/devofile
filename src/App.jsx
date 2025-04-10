@@ -75,10 +75,13 @@ export default function DeveloperProfile() {
   const { toPDF, targetRef } = usePDF({filename: 'developer-profile.pdf'});
   
   useEffect(() => {
+    // Fix for dark mode toggle
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   }, [darkMode]);
 
@@ -178,7 +181,7 @@ export default function DeveloperProfile() {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-200 p-6 print:bg-white print:text-black">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-200 p-6 print:bg-white print:text-black transition-colors duration-200">
       {/* Header with Action Buttons */}
       <div className="max-w-6xl mx-auto mb-8">
         <div className="flex justify-between items-center mb-8 print:hidden">
@@ -186,7 +189,8 @@ export default function DeveloperProfile() {
           <div className="flex space-x-3">
             <button 
               onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm"
+              className="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm flex items-center justify-center"
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
               {darkMode ? <SunIcon size={16} /> : <MoonIcon size={16} />}
             </button>
@@ -237,17 +241,18 @@ export default function DeveloperProfile() {
         </div>
       </div>
       
+      {/* Main content in Bento box grid layout */}
       <div ref={targetRef} className="max-w-6xl mx-auto">
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           ref={profileRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          {/* Left Column - Personal Info */}
-          <motion.div variants={itemVariants} className="lg:col-span-4">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm mb-8">
+          {/* Profile Card - Span 1 column */}
+          <motion.div variants={itemVariants} className="md:col-span-1">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
               {isEditing ? (
                 <>
                   <div className="mb-6">
@@ -288,7 +293,7 @@ export default function DeveloperProfile() {
                 </>
               ) : (
                 <>
-                  <div className="text-center mb-8">
+                  <div className="text-center mb-6">
                     <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
                       <img src="/api/placeholder/128/128" alt={profile.name} className="rounded-full" />
                     </div>
@@ -375,41 +380,11 @@ export default function DeveloperProfile() {
                 )}
               </div>
             </div>
-            
-            {/* DSA Topics */}
-            <motion.div variants={itemVariants} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm mb-8">
-              <div className="flex items-center mb-4">
-                <BookOpenIcon size={18} className="mr-2 text-indigo-500 dark:text-indigo-400" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">DSA Topics</h2>
-              </div>
-              {isEditing ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Enter topics separated by commas</p>
-                  <textarea 
-                    value={editableProfile.dsaTopics.join(', ')} 
-                    onChange={(e) => {
-                      const topics = e.target.value.split(',').map(topic => topic.trim());
-                      setEditableProfile(prev => ({...prev, dsaTopics: topics}));
-                    }}
-                    className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 h-24 dark:text-white"
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {profile.dsaTopics.map((topic, idx) => (
-                    <span 
-                      key={idx} 
-                      className="bg-indigo-50 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-200 px-3 py-1 rounded-full text-sm"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-            
-            {/* GitHub Stats */}
-            <motion.div variants={itemVariants} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          </motion.div>
+          
+          {/* GitHub Stats - Span 2 columns */}
+          <motion.div variants={itemVariants} className="md:col-span-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
               <div className="flex items-center mb-5">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">GitHub Stats</h2>
               </div>
@@ -457,7 +432,7 @@ export default function DeveloperProfile() {
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                   <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">Repositories</span>
                     <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{profile.githubStats.repos}</p>
@@ -476,13 +451,46 @@ export default function DeveloperProfile() {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           </motion.div>
           
-          {/* Right Column - Main Content */}
-          <motion.div variants={itemVariants} className="lg:col-span-8 space-y-8">
-            {/* Skills */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm">
+          {/* DSA Topics - span 1 column */}
+          <motion.div variants={itemVariants} className="md:col-span-1">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
+              <div className="flex items-center mb-4">
+                <BookOpenIcon size={18} className="mr-2 text-indigo-500 dark:text-indigo-400" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">DSA Topics</h2>
+              </div>
+              {isEditing ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Enter topics separated by commas</p>
+                  <textarea 
+                    value={editableProfile.dsaTopics.join(', ')} 
+                    onChange={(e) => {
+                      const topics = e.target.value.split(',').map(topic => topic.trim());
+                      setEditableProfile(prev => ({...prev, dsaTopics: topics}));
+                    }}
+                    className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 h-24 dark:text-white"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {profile.dsaTopics.map((topic, idx) => (
+                    <span 
+                      key={idx} 
+                      className="bg-indigo-50 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-200 px-3 py-1 rounded-full text-sm"
+                    >
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+          
+          {/* Skills - Span 2 columns */}
+          <motion.div variants={itemVariants} className="md:col-span-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm h-full">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Skills</h2>
               {isEditing ? (
                 <div className="space-y-3">
@@ -526,7 +534,7 @@ export default function DeveloperProfile() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {profile.skills.map((skill, idx) => (
                     <div key={idx}>
                       <div className="flex justify-between mb-1">
@@ -546,9 +554,11 @@ export default function DeveloperProfile() {
                 </div>
               )}
             </div>
-            
-            {/* LeetCode Stats */}
-            <motion.div variants={itemVariants} className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm">
+          </motion.div>
+          
+          {/* LeetCode Stats - Span 3 columns (full width) */}
+          <motion.div variants={itemVariants} className="md:col-span-3">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">LeetCode Progress</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
@@ -582,162 +592,185 @@ export default function DeveloperProfile() {
                           value={editableProfile.leetcodeStats.medium} 
                           onChange={(e) => handleChange(e, 'leetcodeStats')}
                           className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Hard</label>
-                        <input 
-                          type="number" 
-                          name="hard" 
-                          value={editableProfile.leetcodeStats.hard} 
-                          onChange={(e) => handleChange(e, 'leetcodeStats')}
-                          className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
-                        />
-                      </div>
+                          />
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Hard</label>
+                            <input 
+                              type="number" 
+                              name="hard" 
+                              value={editableProfile.leetcodeStats.hard} 
+                              onChange={(e) => handleChange(e, 'leetcodeStats')}
+                              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="bg-indigo-50 dark:bg-indigo-900/30 p-4 rounded-lg">
+                            <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-1">Total Solved</h3>
+                            <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{profile.leetcodeStats.solved}</p>
+                          </div>
+                          <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
+                            <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-1">Easy</h3>
+                            <p className="text-3xl font-bold text-green-600 dark:text-green-400">{profile.leetcodeStats.easy}</p>
+                          </div>
+                          <div className="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
+                            <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-1">Medium</h3>
+                            <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{profile.leetcodeStats.medium}</p>
+                          </div>
+                          <div className="bg-red-50 dark:bg-red-900/30 p-4 rounded-lg">
+                            <h3 className="text-gray-500 dark:text-gray-400 text-sm mb-1">Hard</h3>
+                            <p className="text-3xl font-bold text-red-600 dark:text-red-400">{profile.leetcodeStats.hard}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="h-60">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={leetcodeData}
+                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
+                          <XAxis dataKey="month" stroke={darkMode ? '#9CA3AF' : '#6B7280'} />
+                          <YAxis stroke={darkMode ? '#9CA3AF' : '#6B7280'} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: darkMode ? '#1F2937' : '#FFFFFF',
+                              borderColor: darkMode ? '#374151' : '#E5E7EB',
+                              color: darkMode ? '#F9FAFB' : '#111827'
+                            }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="problems"
+                            stroke="#8884d8"
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                            activeDot={{ r: 8 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+              
+              {/* Projects - Span 3 columns (full width) */}
+              <motion.div variants={itemVariants} className="md:col-span-3">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Projects</h2>
+                  {isEditing ? (
+                    <div className="space-y-6">
+                      {editableProfile.projects.map((project, idx) => (
+                        <div key={idx} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                          <div className="mb-3">
+                            <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Project Title</label>
+                            <input 
+                              type="text" 
+                              name="title" 
+                              value={project.title} 
+                              onChange={(e) => handleChange(e, 'projects', idx)}
+                              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Description</label>
+                            <textarea 
+                              name="description" 
+                              value={project.description} 
+                              onChange={(e) => handleChange(e, 'projects', idx)}
+                              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 h-20 dark:text-white"
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Technologies (comma separated)</label>
+                            <input 
+                              type="text" 
+                              name="tech" 
+                              value={project.tech.join(', ')} 
+                              onChange={(e) => {
+                                const techArray = e.target.value.split(',').map(t => t.trim());
+                                setEditableProfile(prev => {
+                                  const newProjects = [...prev.projects];
+                                  newProjects[idx] = {...newProjects[idx], tech: techArray};
+                                  return {...prev, projects: newProjects};
+                                });
+                              }}
+                              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Live Link</label>
+                            <input 
+                              type="text" 
+                              name="live" 
+                              value={project.live} 
+                              onChange={(e) => handleChange(e, 'projects', idx)}
+                              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 dark:text-white"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button 
+                        onClick={() => {
+                          setEditableProfile(prev => ({
+                            ...prev, 
+                            projects: [...prev.projects, { 
+                              title: 'New Project', 
+                              description: 'Project description', 
+                              tech: ['React'], 
+                              live: 'https://example.com' 
+                            }]
+                          }));
+                        }}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm"
+                      >
+                        Add Project
+                      </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border-l-4 border-indigo-500">
-                        <span className="text-gray-500 dark:text-gray-400 text-sm">Total Solved</span>
-                        <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{profile.leetcodeStats.solved}</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border-l-4 border-green-500">
-                        <span className="text-gray-500 dark:text-gray-400 text-sm">Easy</span>
-                        <p className="text-xl font-semibold text-green-600 dark:text-green-400">{profile.leetcodeStats.easy}</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border-l-4 border-yellow-500">
-                        <span className="text-gray-500 dark:text-gray-400 text-sm">Medium</span>
-                        <p className="text-xl font-semibold text-yellow-600 dark:text-yellow-400">{profile.leetcodeStats.medium}</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border-l-4 border-red-500">
-                        <span className="text-gray-500 dark:text-gray-400 text-sm">Hard</span>
-                        <p className="text-xl font-semibold text-red-600 dark:text-red-400">{profile.leetcodeStats.hard}</p>
-                      </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {profile.projects.map((project, idx) => (
+                        <motion.div 
+                          key={idx}
+                          whileHover={{ y: -5 }}
+                          className="bg-gray-50 dark:bg-gray-700 rounded-xl overflow-hidden shadow-sm"
+                        >
+                          <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <img src="/api/placeholder/400/250" alt={project.title} className="object-cover w-full h-full opacity-60" />
+                          </div>
+                          <div className="p-5">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{project.title}</h3>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{project.description}</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {project.tech.map((tech, techIdx) => (
+                                <span 
+                                  key={techIdx} 
+                                  className="bg-indigo-100 dark:bg-indigo-800/40 text-indigo-600 dark:text-indigo-300 px-2 py-1 rounded text-xs"
+                                >
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+                            <a 
+                              href={project.live} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center"
+                            >
+                              View Project <span className="ml-1">→</span>
+                            </a>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
                   )}
                 </div>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={leetcodeData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                      <XAxis dataKey="month" stroke="#6B7280" />
-                      <YAxis stroke="#6B7280" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: '#F9FAFB', 
-                          borderRadius: '8px', 
-                          border: '1px solid #E5E7EB',
-                          color: '#111827'
-                        }} 
-                      />
-                      <Line type="monotone" dataKey="problems" stroke="#6366F1" strokeWidth={2} activeDot={{ r: 8 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+              </motion.div>
             </motion.div>
-            
-            {/* Projects */}
-            <motion.div variants={containerVariants} className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Projects</h2>
-              {isEditing ? (
-                <div className="space-y-6">
-                  {editableProfile.projects.map((project, idx) => (
-                    <div key={idx} className="border border-gray-200 dark:border-gray-700 p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
-                      <div className="mb-3">
-                        <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Project Title</label>
-                        <input 
-                          type="text" 
-                          name="title" 
-                          value={project.title} 
-                          onChange={(e) => handleChange(e, 'projects', idx)}
-                          className="w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-md px-3 py-2 dark:text-white"
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Description</label>
-                        <textarea 
-                          name="description" 
-                          value={project.description} 
-                          onChange={(e) => handleChange(e, 'projects', idx)}
-                          className="w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-md px-3 py-2 h-20 dark:text-white"
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Technologies (comma separated)</label>
-                        <input 
-                          type="text" 
-                          value={project.tech.join(', ')} 
-                          onChange={(e) => {
-                            const techs = e.target.value.split(',').map(tech => tech.trim());
-                            setEditableProfile(prev => {
-                              const newProjects = [...prev.projects];
-                              newProjects[idx] = { ...newProjects[idx], tech: techs };
-                              return { ...prev, projects: newProjects };
-                            });
-                          }}
-                          className="w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-md px-3 py-2 dark:text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-500 dark:text-gray-400 mb-1 text-sm">Live Link</label>
-                        <input 
-                          type="text" 
-                          name="live" 
-                          value={project.live} 
-                          onChange={(e) => handleChange(e, 'projects', idx)}
-                          className="w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-md px-3 py-2 dark:text-white"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                  <button 
-                    onClick={() => {
-                      setEditableProfile(prev => ({
-                        ...prev, 
-                        projects: [...prev.projects, { 
-                          title: 'New Project', 
-                          description: 'Project description', 
-                          tech: ['Technology'], 
-                          live: '#' 
-                        }]
-                      }));
-                    }}
-                    className="bg-indigo-600 text-white px-3 py-1 rounded-md mt-2 text-sm"
-                  >
-                    Add Project
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {profile.projects.map((project, idx) => (
-                    <motion.div 
-                      key={idx} 
-                      variants={itemVariants}
-                      className="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg border-l-4 border-indigo-500 hover:shadow-md transition-shadow group"
-                    >
-                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{project.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{project.description}</p>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {project.tech.map((tech, techIdx) => (
-                          <span key={techIdx} className="bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-200 text-xs px-2 py-1 rounded-full border border-indigo-100 dark:border-gray-500">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                      <a href={project.live} target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 text-sm inline-flex items-center">
-                        View Project <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </a>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </div>
-  );
-}
+          </div>
+        </div>
+      );
+    }
